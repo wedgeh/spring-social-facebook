@@ -25,10 +25,19 @@ public class PagedList<T> extends ArrayList<T> {
 	
 	private final PagingParameters nextPage;
 
+	private Integer totalCount = null;
+
 	public PagedList(List<T> unpagedList, PagingParameters previousPage, PagingParameters nextPage) {
 		super(unpagedList);
 		this.previousPage = previousPage;
 		this.nextPage = nextPage;
+	}
+
+	public PagedList(List<T> unpagedList, PagingParameters previousPage, PagingParameters nextPage, Integer totalCount) {
+		super(unpagedList);
+		this.previousPage = previousPage;
+		this.nextPage = nextPage;
+		this.totalCount = totalCount;
 	}
 
 	public PagingParameters getPreviousPage() {
@@ -39,5 +48,11 @@ public class PagedList<T> extends ArrayList<T> {
 		return nextPage;
 	}
 
+	/**
+	 * @return the totalCount
+	 */
+	public Integer getTotalCount() {
+		return totalCount;
+	}
 
 }

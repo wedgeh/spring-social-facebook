@@ -22,6 +22,7 @@ import org.springframework.social.facebook.api.PagedList;
 import org.springframework.social.facebook.api.PagingParameters;
 import org.springframework.social.facebook.api.Reference;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 class LikeTemplate extends AbstractFacebookOperations implements LikeOperations {
 
@@ -45,6 +46,15 @@ class LikeTemplate extends AbstractFacebookOperations implements LikeOperations 
 	public PagedList<Reference> getLikes(String objectId) {
 		requireAuthorization();
 		return graphApi.fetchConnections(objectId, "likes", Reference.class);
+	}
+
+    public Integer getLikeCount(String objectId) {
+        PagingParameters pagingParameters = new PagingParameters(Integer.valueOf(1), Integer.valueOf(0), null, null);
+        MultiValueMap<String, String> queryParameters = pagingParameters.toMap();
+        queryParameters.set("summary", "true");
+        requireAuthorization();
+        PagedList<Reference> likes = graphApi.fetchConnections(objectId, "likes", Reference.class, queryParameters);
+		return likes.getTotalCount();
 	}
 
 	public PagedList<Reference> getLikes(String objectId, PagingParameters pagingParameters) {
@@ -197,4 +207,5 @@ class LikeTemplate extends AbstractFacebookOperations implements LikeOperations 
 	}
 
 	private static final String PAGE_FIELDS = "id,name,category,description,location,website,picture,phone,affiliation,company_overview,likes,checkins,cover";
+
 }

@@ -15,7 +15,7 @@
  */
 package org.springframework.social.facebook.api.impl;
 
-import static org.springframework.social.facebook.api.impl.PagedListUtils.*;
+import static org.springframework.social.facebook.api.impl.PagedListUtils.getPagedListParameters;
 
 import java.io.IOException;
 import java.net.URI;
@@ -252,13 +252,21 @@ public class FacebookTemplate extends AbstractOAuth2ApiBinding implements Facebo
 
 	private <T> PagedList<T> pagify(Class<T> type, JsonNode jsonNode) {
 		List<T> data = deserializeDataList(jsonNode.get("data"), type);
+		Integer totalCount = null;
+		if (jsonNode.has("summary")) {
+			JsonNode summaryNode = jsonNode.get("summary");
+			if (summaryNode.has("total_count")) {
+				JsonNode totalCountNode = summaryNode.get("total_count");
+				totalCount = totalCountNode.asInt();
+			}
+		}
 		if (jsonNode.has("paging")) {
 			JsonNode pagingNode = jsonNode.get("paging");
 			PagingParameters previousPage = getPagedListParameters(pagingNode, "previous");
 			PagingParameters nextPage = getPagedListParameters(pagingNode, "next");
-			return new PagedList<T>(data, previousPage, nextPage);
+			return new PagedList<T>(data, previousPage, nextPage, totalCount);
 		}
-		return new PagedList<T>(data, null, null);
+		return new PagedList<T>(data, null, null, totalCount);
 	}
 
 	public byte[] fetchImage(String objectId, String connectionType, ImageType type) {

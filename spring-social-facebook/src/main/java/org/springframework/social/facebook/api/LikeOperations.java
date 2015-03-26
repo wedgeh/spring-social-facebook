@@ -37,6 +37,14 @@ public interface LikeOperations {
 	 */
 	PagedList<Reference> getLikes(String objectId);
 
+    /**
+     * Retrieve the number of likes on the given object.
+     * 
+     * @param objectId the object ID (an Album, Checkin, Comment, Note, Photo, Post, or Video).
+     * @return the number of likes that the object has recieved.
+     */
+    Integer getLikeCount(String objectId);
+
 	/**
 	 * Retrieves a page of references to users who have liked the specified object.
 	 * @param objectId the object ID (an Album, Checkin, Comment, Note, Photo, Post, or Video).

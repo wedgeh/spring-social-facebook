@@ -15,10 +15,15 @@
  */
 package org.springframework.social.facebook.api;
 
-import static org.junit.Assert.*;
-import static org.springframework.http.HttpMethod.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.util.List;
 
@@ -77,9 +82,17 @@ public class LikeTemplateTest extends AbstractFacebookApiTest {
 	
 	@Test
 	public void getLikes() {
-		mockServer.expect(requestTo("https://graph.facebook.com/v2.2/12345678/likes")).andExpect(method(GET))
-			.andExpect(header("Authorization", "OAuth someAccessToken"))
-			.andRespond(withSuccess(jsonResource("user-references"), MediaType.APPLICATION_JSON));
+		mockServer.expect(requestTo("https://graph.facebook.com/v2.2/12345678/likes?limit=1&offset=0&summary=true")).andExpect(method(GET))
+		    .andExpect(header("Authorization", "OAuth someAccessToken")).andRespond(
+		        withSuccess(jsonResource("user-references-with-summary"), MediaType.APPLICATION_JSON));
+		Integer likeCount = facebook.likeOperations().getLikeCount("12345678");
+		assertEquals(Integer.valueOf(3), likeCount);
+	}
+
+	@Test
+	public void getLikeCount() {
+		mockServer.expect(requestTo("https://graph.facebook.com/v2.2/12345678/likes")).andExpect(method(GET)).andExpect(
+		    header("Authorization", "OAuth someAccessToken")).andRespond(withSuccess(jsonResource("user-references"), MediaType.APPLICATION_JSON));
 		PagedList<Reference> likes = facebook.likeOperations().getLikes("12345678");
 		assertEquals(3, likes.size());
 		assertEquals("Michael Scott", likes.get(0).getName());
