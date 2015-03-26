@@ -112,7 +112,9 @@ public class Page extends FacebookObject {
 	private String website;
 	
 	private int wereHereCount;
-	
+
+    private Metadata metadata;
+
 	/**
 	 * @return The page's ID.
 	 */
@@ -346,7 +348,14 @@ public class Page extends FacebookObject {
 		return wereHereCount;
 	}
 	
-	public static enum PriceRange {
+    /**
+     * @return the metadata
+     */
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public static enum PriceRange {
 		$,$$, $$$, $$$$, UNSPECIFIED;
 	}
 	

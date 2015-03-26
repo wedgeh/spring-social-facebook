@@ -34,6 +34,14 @@ public interface PageOperations {
 	 * @return a {@link Page}
 	 */
 	Page getPage(String pageId);
+
+    /**
+     * Retrieves data for a page including the page metadata.
+     * 
+     * @param pageId the page ID.
+     * @return a {@link Page}
+     */
+    Page getPageWithMetadata(String pageId);
 	
 	/**
 	 * Checks whether the logged-in user for this session is an admin of the page with the given page ID.

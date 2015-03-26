@@ -37,6 +37,7 @@ import org.springframework.social.facebook.api.ImageSource;
 import org.springframework.social.facebook.api.Invitation;
 import org.springframework.social.facebook.api.Location;
 import org.springframework.social.facebook.api.MessageTag;
+import org.springframework.social.facebook.api.Metadata;
 import org.springframework.social.facebook.api.Page;
 import org.springframework.social.facebook.api.ParkingInfo;
 import org.springframework.social.facebook.api.Photo;
@@ -85,6 +86,7 @@ public class FacebookModule extends SimpleModule {
 		context.setMixInAnnotations(ImageSource.class, ImageSourceMixin.class);
 		
 		context.setMixInAnnotations(Page.class, PageMixin.class);
+        context.setMixInAnnotations(Metadata.class, MetadataMixin.class);
 		context.setMixInAnnotations(RestaurantServices.class, RestaurantServicesMixin.class);
 		context.setMixInAnnotations(RestaurantSpecialties.class, RestaurantSpecialtiesMixin.class);
 		context.setMixInAnnotations(ParkingInfo.class, ParkingInfoMixin.class);

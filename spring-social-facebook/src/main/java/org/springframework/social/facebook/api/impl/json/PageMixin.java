@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.springframework.social.facebook.api.CoverPhoto;
 import org.springframework.social.facebook.api.Location;
+import org.springframework.social.facebook.api.Metadata;
 import org.springframework.social.facebook.api.Page;
 import org.springframework.social.facebook.api.Page.PriceRange;
 import org.springframework.social.facebook.api.ParkingInfo;
@@ -174,6 +175,9 @@ abstract class PageMixin extends FacebookObjectMixin {
 	
 	@JsonProperty("were_here_count")
 	int wereHereCount;
+
+    @JsonProperty("metadata")
+    Metadata metadata;
 	
 	private static class LocationDeserializer extends JsonDeserializer<Location> {
 		@Override

@@ -43,6 +43,12 @@ class PageTemplate extends AbstractFacebookOperations implements PageOperations 
 		return graphApi.fetchObject(pageId, Page.class);
 	}
 
+    public Page getPageWithMetadata(String pageId) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.set("metadata", "1");
+        return graphApi.fetchObject(pageId, Page.class, map);
+    }
+
 	public boolean isPageAdmin(String pageId) {
 		requireAuthorization();
 		return getAccount(pageId) != null;

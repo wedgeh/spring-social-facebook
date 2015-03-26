@@ -15,10 +15,18 @@
  */
 package org.springframework.social.facebook.api;
 
-import static org.junit.Assert.*;
-import static org.springframework.http.HttpMethod.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.util.List;
 import java.util.Map;
@@ -221,6 +229,43 @@ public class PageTemplateTest extends AbstractFacebookApiTest {
 		assertEquals(PriceRange.$$, page.getPriceRange());
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getPage_withExtraData_andMetadata() {
+		mockServer.expect(requestTo("https://graph.facebook.com/v2.2/11803178355?metadata=1")).andExpect(method(GET)).andExpect(
+		    header("Authorization", "OAuth someAccessToken")).andRespond(
+		    withSuccess(jsonResource("page-with-extra-data-and-metadata"), MediaType.APPLICATION_JSON));
+
+		Page page = facebook.pageOperations().getPageWithMetadata("11803178355");
+		assertEquals("11803178355", page.getId());
+		assertEquals("A Scanner Darkly", page.getName());
+		assertEquals("https://www.facebook.com/pages/A-Scanner-Darkly/11803178355", page.getLink());
+		assertNull(page.getDescription());
+		Map<String, Object> extraData = page.getExtraData();
+		assertEquals("Warner Independent Pictures", extraData.get("studio"));
+		assertEquals(0, page.getWereHereCount());
+		assertEquals("Keanu Reeves, Robert Downey Jr., Woody Harrelson, Winona Ryder, Rory Cochrane", extraData.get("starring"));
+		assertEquals("Richard Linklater based on Philip K. Dick's novel", extraData.get("screenplay_by"));
+		assertEquals("2007", extraData.get("release_date"));
+		assertEquals("Steven Soderbergh and George Clooney (Executive Producers)", extraData.get("produced_by"));
+		assertTrue(extraData
+		    .get("plot_outline")
+		    .toString()
+		    .startsWith(
+		        "In the future \"seven years from now\", America has lost the war on drugs. A highly addictive and debilitating illegal drug called Substance D, distilled from small blue flowers"));
+		assertEquals("Science Fiction", extraData.get("genre"));
+		assertEquals("Richard Linklater", page.getDirectedBy());
+		assertEquals("Winner of Best Animation award OFCS Awards 2007", extraData.get("awards"));
+		Map<String, Object> embedded = (Map<String, Object>) extraData.get("embedded");
+		assertEquals("y", embedded.get("x"));
+		assertEquals(2, embedded.get("a"));
+		Map<String, Object> deeper = (Map<String, Object>) embedded.get("deeper");
+		assertEquals("bar", deeper.get("foo"));
+		assertEquals(PriceRange.$$, page.getPriceRange());
+		assertNotNull(page.getMetadata());
+		assertEquals("user", page.getMetadata().getType());
+	}
+
 	@Test
 	public void isPageAdmin() {
 		expectFetchAccounts();
